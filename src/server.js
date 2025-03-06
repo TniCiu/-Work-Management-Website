@@ -23,7 +23,7 @@ const START_SERVER = () => {
   // Cấu hình middleware
   app.use(
     cors({
-      origin: "http://localhost:5173",
+      origin: "*",
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
       credentials: true,
     })
@@ -40,10 +40,18 @@ const START_SERVER = () => {
   // Khởi tạo WebSocket server
   initializeWebSocket(server);
 
+  if(env.BUILD_MODE === 'production'){
+    server.listen(process.env.PORT, () => {
+      console.log(`3. Production Server is running successfully at${process.env.PORT}/`);
+    });
+  }else
+  {
+    server.listen(env.APP_PORT, env.APP_HOST, () => {
+      console.log(`3. Back-end Server is running successfully at http://${env.APP_HOST}:${env.APP_PORT}/`);
+    });
+  }
   // Lắng nghe server
-  server.listen(env.APP_PORT, env.APP_HOST, () => {
-    console.log(`3. Back-end Server is running successfully at http://${env.APP_HOST}:${env.APP_PORT}/`);
-  });
+ 
 
   // Ngắt kết nối MongoDB khi server tắt
   exitHook(() => {
