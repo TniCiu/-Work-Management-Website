@@ -5,7 +5,7 @@ import {
     TOKEN_AUTHENTICATION,
     ACTION_UPDATE_DESCRIPTION,
 } from "~/utils/constans";
-
+import MenuIcon from "@mui/icons-material/Menu"
 import React, { useState, useEffect, useRef } from "react";
 import {
     Modal,
@@ -33,6 +33,7 @@ import ReactQuill from "react-quill";
 import { fetchInforUserBoardsAPI, addMemberToCardAPI, updateCardDetailsAPI, fetchUserInfoAPI } from '~/apis';
 import Ink from "react-ink";
 import { toast } from "react-toastify";
+
 
 const modalStyle = {
     top: "50%",
@@ -83,11 +84,23 @@ const CardInformation = ({ board, openCardInformation, onClose, card }) => {
     const menuAI = useRef(null);
     const aiContainerRef = useRef(null);
     const [showContainerReponse, setShowContainerReponse] = useState(false);
+    const [showRightPane, setShowRightPane] = useState(window.innerWidth > 768);
+
     const [contentAndActionAI, setContentAndActionAI] = useState({
         content: "",
         action: "", //ACTION_AI
         labelShow: "", // danh cho action change tone
     });
+    useEffect(() => {
+    const handleResize = () => {
+        setShowRightPane(window.innerWidth > 768); // Tự động thay đổi khi resize
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+        window.removeEventListener("resize", handleResize);
+    };
+}, []);
     useEffect(() => {
         if (card) {
             setCardData(card); // Cập nhật toàn bộ dữ liệu card
@@ -1439,9 +1452,25 @@ const CardInformation = ({ board, openCardInformation, onClose, card }) => {
                             />
                         </Box>
                     </Box>
-                    <CardInformationRightPane
-                        handleCoverButtonClick={handleCoverButtonClick}
-                    />
+
+                    {window.innerWidth <= 768 && (
+            <IconButton
+                onClick={() => setShowRightPane(!showRightPane)}
+                sx={{
+                    position: "absolute",
+                    top: 1,
+                    right: 10,
+                    backgroundColor: "#0984e3",
+                    color: "#fff",
+                    "&:hover": { backgroundColor: "#0984e3" },
+                }}
+            >
+                <MenuIcon />
+            </IconButton>
+        )}
+                    {showRightPane && (
+            <CardInformationRightPane handleCoverButtonClick={handleCoverButtonClick} />
+        )}
                     <input
                         type="file"
                         ref={fileInputRef}
