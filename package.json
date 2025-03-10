@@ -5,6 +5,7 @@
   "type": "module",
   "author": "Tanhoccode",
   "description": "",
+  "homepage": ".",
   "engines": {
     "node": "22.14.0"
   },
