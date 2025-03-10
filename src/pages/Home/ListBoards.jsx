@@ -39,7 +39,7 @@ function BoardList( ) {
   console.log("Initial boards:", boards);
 
   const ownerIds = localStorage.getItem('ownerIds');
-
+  
   useEffect(() => {
     if (!ownerIds) {
       navigate("/");
@@ -189,7 +189,7 @@ function BoardList( ) {
           <Grid item xs={12} sm={9} className="board-container">
             <Grid container spacing={3}>
               {boards.map(board => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={board._id}>
+                <Grid item xs={12} sm={6} md={4} key={board._id}>
                   <Card>
                     <CardContent>
                       <Typography variant="h5" component="h2">
