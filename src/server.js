@@ -23,7 +23,7 @@ const START_SERVER = () => {
   // Cấu hình middleware
   app.use(
     cors({
-      origin: "https://work-management-website-1yxj.vercel.app",
+      origin: "https://work-management-website.vercel.app",
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
       credentials: true,
     })
