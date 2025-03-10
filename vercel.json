@@ -1,19 +1,21 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/**",
+      "destination": "/index.html",
+      "has": [
+        { "type": "header", "key": "accept", "value": "text/html" }
+      ]
+    }
   ],
   "headers": [
     {
       "source": "/assets/(.*).js",
-      "headers": [
-        { "key": "Content-Type", "value": "application/javascript" }
-      ]
+      "headers": [{ "key": "Content-Type", "value": "application/javascript" }]
     },
     {
       "source": "/assets/(.*).css",
-      "headers": [
-        { "key": "Content-Type", "value": "text/css" }
-      ]
+      "headers": [{ "key": "Content-Type", "value": "text/css" }]
     }
   ]
 }
