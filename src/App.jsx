@@ -9,28 +9,35 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('ownerIds'));
 
   useEffect(() => {
-    const checkAuthentication = () => {
+    const handleStorageChange = () => {
       const ownerIds = localStorage.getItem('ownerIds');
       setIsAuthenticated(!!ownerIds);
     };
 
-    checkAuthentication();
-  }, []); // Chỉ chạy một lần khi component được render
+    // Kiểm tra lại khi component mount
+    handleStorageChange();
+
+    // Lắng nghe sự thay đổi của localStorage
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []); 
 
   return (
     <Router>
       <Routes>
-      <Route
+        <Route
           path="/"
           element={<Login onLoginSuccess={() => setIsAuthenticated(true)} />}
         />
         
         <Route
-        path="/signUp"
-        element={<SignUp onLoginSuccess={() => setIsAuthenticated(true)} />}
-      />
+          path="/signUp"
+          element={<SignUp onLoginSuccess={() => setIsAuthenticated(true)} />}
+        />
       
-     
         <Route
           path="/boards"
           element={isAuthenticated ? <ListBoards /> : <Navigate to="/" replace />}
@@ -39,7 +46,6 @@ function App() {
           path="/boards/:id"
           element={isAuthenticated ? <Board /> : <Navigate to="/" replace />}
         />
-        {/* Add other routes as needed */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
@@ -47,4 +53,3 @@ function App() {
 }
 
 export default App;
- 

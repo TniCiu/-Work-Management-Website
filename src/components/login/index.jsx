@@ -30,6 +30,7 @@ const Login = () => {
     try {
       const res = await loginAPI({ email, password });
       localStorage.setItem('ownerIds', res.ownerIds);
+      window.dispatchEvent(new Event('storage'))
       toast.success(res?.message);
       navigate('/boards', { state: { ownerIds: res.ownerIds } });
     } catch (err) {
@@ -50,6 +51,7 @@ const Login = () => {
       console.log('API Response:', response);
   
       localStorage.setItem('ownerIds', response.user._id);
+      window.dispatchEvent(new Event('storage')); // Kích hoạt sự kiện cập nhật
       toast.success(response.message);
       navigate('/boards', { state: { ownerIds: response.user._id } });
     } catch (error) {
@@ -57,6 +59,7 @@ const Login = () => {
       toast.error('Google login failed. Please try again.');
     }
   };
+  
   
   
   return (

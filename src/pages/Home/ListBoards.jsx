@@ -39,6 +39,13 @@ function BoardList( ) {
   console.log("Initial boards:", boards);
 
   const ownerIds = localStorage.getItem('ownerIds');
+  
+  useEffect(() => {
+    if (!ownerIds) {
+      navigate("/");
+    }
+  }, [navigate]);
+
   useEffect(() => {
     fetchUserBoardsAPI(ownerIds).then(data => {
       console.log("Fetched data:", data);
