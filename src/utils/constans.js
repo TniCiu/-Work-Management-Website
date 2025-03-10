@@ -1,6 +1,6 @@
 
-export const API_ROOT = 'http://localhost:2903'
-// export const API_ROOT = 'https://work-management-api.onrender.com'
+// export const API_ROOT = 'http://localhost:2903'
+export const API_ROOT = 'https://work-management-api.onrender.com'
 //URL_AI
 export const API_AI ='https://api.coze.com/open_api/v2/chat'
 export const TOKEN_AUTHENTICATION =
