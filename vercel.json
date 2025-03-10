@@ -8,6 +8,12 @@
       "headers": [
         { "key": "Content-Type", "value": "application/javascript" }
       ]
+    },
+    {
+      "source": "/assets/(.*).css",
+      "headers": [
+        { "key": "Content-Type", "value": "text/css" }
+      ]
     }
   ]
 }

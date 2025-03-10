@@ -3,14 +3,14 @@ import react from '@vitejs/plugin-react-swc'
 import svgr from 'vite-plugin-svgr'
 
 export default defineConfig({
-  base: '/', // Đảm bảo đường dẫn chính xác trên Vercel
+  base: './',  // Sửa từ '/' thành './' để đảm bảo file tĩnh được load đúng
   build: {
-    outDir: 'dist', // Đảm bảo build vào đúng thư mục
+    outDir: 'dist',
     rollupOptions: {
       output: {
-        entryFileNames: 'assets/[name].js',
-        chunkFileNames: 'assets/[name].js',
-        assetFileNames: 'assets/[name].[ext]'
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
       }
     }
   },
