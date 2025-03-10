@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Button, TextField, Typography, Box, Divider } from "@mui/material";
-import { loginAPI, LoginwithGoogleAPI} from "~/apis";
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
+import { Button, TextField, Typography, Box, Divider, useMediaQuery } from "@mui/material";
+import { loginAPI, LoginwithGoogleAPI } from "~/apis";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+
 const Login = () => {
   const navigate = useNavigate();
+  const isMobile = useMediaQuery("(max-width: 600px)");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -21,7 +23,6 @@ const Login = () => {
 
   const handleSubmit = async () => {
     const { email, password } = formData;
-
     if (!email || !password) {
       setError("Please fill in all fields.");
       return;
@@ -29,97 +30,99 @@ const Login = () => {
 
     try {
       const res = await loginAPI({ email, password });
-      localStorage.setItem('ownerIds', res.ownerIds);
-      window.dispatchEvent(new Event('storage'))
+      localStorage.setItem("ownerIds", res.ownerIds);
+      window.dispatchEvent(new Event("storage"));
       toast.success(res?.message);
-      navigate('/boards', { state: { ownerIds: res.ownerIds } });
+      navigate("/boards", { state: { ownerIds: res.ownerIds } });
     } catch (err) {
       setError("Login failed. Please check your credentials.");
     }
   };
+
   const handleGoogleLogin = async (credentialResponse) => {
-    console.log('Google Credential Response:', credentialResponse);
-    
+    console.log("Google Credential Response:", credentialResponse);
+
     const token = credentialResponse.credential;
     if (!token) {
-      toast.error('No token received from Google.');
+      toast.error("No token received from Google.");
       return;
     }
-  
+
     try {
       const response = await LoginwithGoogleAPI({ token });
-      console.log('API Response:', response);
-  
-      localStorage.setItem('ownerIds', response.user._id);
-      window.dispatchEvent(new Event('storage')); // Kích hoạt sự kiện cập nhật
+      console.log("API Response:", response);
+
+      localStorage.setItem("ownerIds", response.user._id);
+      window.dispatchEvent(new Event("storage"));
       toast.success(response.message);
-      navigate('/boards', { state: { ownerIds: response.user._id } });
+      navigate("/boards", { state: { ownerIds: response.user._id } });
     } catch (error) {
-      console.error('Google login error:', error);
-      toast.error('Google login failed. Please try again.');
+      console.error("Google login error:", error);
+      toast.error("Google login failed. Please try again.");
     }
   };
-  
-  
-  
+
   return (
     <Box
       sx={{
         display: "flex",
+        flexDirection: isMobile ? "column" : "row",
         height: "100vh",
         backgroundColor: "#f5f5f5",
       }}
     >
       {/* Left Video Section */}
-      <Box
-        sx={{
-          flex: 1,
-          maxWidth: "40%",
-          position: "relative",
-          height: "100vh",
-          overflow: "hidden",
-        }}
-      >
-        <video
-          autoPlay
-          muted
-          loop
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
+      {!isMobile && (
+        <Box
+          sx={{
+            flex: 1,
+            maxWidth: "40%",
+            position: "relative",
+            height: "100vh",
+            overflow: "hidden",
           }}
         >
-          <source
-            src="https://res.cloudinary.com/ddmsl3meg/video/upload/v1734022899/tnelcibodjsy5ej8hzoo.mp4"
-            type="video/mp4"
-          />
-        </video>
-      </Box>
+          <video
+            autoPlay
+            muted
+            loop
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          >
+            <source
+              src="https://res.cloudinary.com/ddmsl3meg/video/upload/v1734022899/tnelcibodjsy5ej8hzoo.mp4"
+              type="video/mp4"
+            />
+          </video>
+        </Box>
+      )}
 
       {/* Right Form Section */}
       <Box
         sx={{
           flex: 1,
-          maxWidth: "60%",
+          maxWidth: isMobile ? "100%" : "60%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          padding: "40px",
+          padding: isMobile ? "20px" : "40px",
           backgroundColor: "white",
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+          boxShadow: isMobile ? "none" : "0px 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
         <Box
           sx={{
             width: "100%",
-            maxWidth: "600px",
-            padding: "40px",
+            maxWidth: "400px",
+            padding: "30px",
             backgroundColor: "white",
             borderRadius: "8px",
           }}
@@ -134,35 +137,29 @@ const Login = () => {
             Sign in to ProTasker
           </Typography>
           {error && (
-            <Typography
-              color="red"
-              textAlign="center"
-              sx={{ marginBottom: 2 }}
-            >
+            <Typography color="red" textAlign="center" sx={{ marginBottom: 2 }}>
               {error}
             </Typography>
           )}
           {success && (
-            <Typography
-              color="green"
-              textAlign="center"
-              sx={{ marginBottom: 2 }}
-            >
+            <Typography color="green" textAlign="center" sx={{ marginBottom: 2 }}>
               Login successful!
             </Typography>
           )}
-       
-       <GoogleLogin
-        onSuccess={handleGoogleLogin}
-        onError={() => toast.error('Google login failed.')}
-        shape="circle"
-        theme="outline"
-      />
 
-          
+          <Box sx={{ display: "flex", justifyContent: "center", marginBottom: 2 }}>
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() => toast.error("Google login failed.")}
+              shape="circle"
+              theme="outline"
+            />
+          </Box>
+
           <Typography textAlign="center" color="gray" mb={2}>
-            or sign in with google
+            or sign in with email
           </Typography>
+
           <TextField
             name="email"
             label="Email"
@@ -170,7 +167,7 @@ const Login = () => {
             fullWidth
             value={formData.email}
             onChange={handleChange}
-            sx={{ marginBottom: 4 }}
+            sx={{ marginBottom: 2 }}
           />
           <TextField
             name="password"
@@ -183,7 +180,6 @@ const Login = () => {
             sx={{ marginBottom: 1 }}
           />
 
-
           <Typography
             variant="body2"
             textAlign="right"
@@ -194,8 +190,9 @@ const Login = () => {
               textDecoration: "underline",
             }}
           >
-            Forgot?
+            Forgot password?
           </Typography>
+
           <Button
             variant="contained"
             fullWidth
@@ -212,7 +209,9 @@ const Login = () => {
           >
             Sign In
           </Button>
+
           <Divider sx={{ marginY: 2, width: "100%" }} />
+
           <Typography textAlign="center">
             Don't have an account?{" "}
             <Button

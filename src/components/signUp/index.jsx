@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { Button, TextField, Typography, Box, Divider } from "@mui/material";
+import { Button, TextField, Typography, Box, Divider, useMediaQuery } from "@mui/material";
 import { signupAPI } from "~/apis";
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+
 const SignUp = () => {
   const navigate = useNavigate();
+  const isMobile = useMediaQuery("(max-width: 600px)");
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -36,6 +39,7 @@ const SignUp = () => {
     try {
       const res = await signupAPI({ email, password, username });
       localStorage.setItem('ownerIds', res.ownerIds);
+      window.dispatchEvent(new Event("storage"));
       toast.success(res?.message);
       navigate('/boards', { state: { ownerIds: res.ownerIds } });
     } catch (err) {
@@ -48,59 +52,62 @@ const SignUp = () => {
       sx={{
         display: "flex",
         height: "100vh",
+        flexDirection: { xs: "column", md: "row" },
         backgroundColor: "#f5f5f5",
       }}
     >
-      {/* Left Video Section */}
-      <Box
-        sx={{
-          flex: 1,
-          maxWidth: "40%",
-          position: "relative",
-          height: "100vh",
-          overflow: "hidden",
-        }}
-      >
-        <video
-          autoPlay
-          muted
-          loop
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
+      {/* Left Video Section (Ẩn trên điện thoại) */}
+      {!isMobile && (
+        <Box
+          sx={{
+            flex: 1,
+            maxWidth: "40%",
+            position: "relative",
+            height: "100vh",
+            overflow: "hidden",
           }}
         >
-          <source
-            src="https://res.cloudinary.com/ddmsl3meg/video/upload/v1734022899/tnelcibodjsy5ej8hzoo.mp4"
-            type="video/mp4"
-          />
-        </video>
-      </Box>
+          <video
+            autoPlay
+            muted
+            loop
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          >
+            <source
+              src="https://res.cloudinary.com/ddmsl3meg/video/upload/v1734022899/tnelcibodjsy5ej8hzoo.mp4"
+              type="video/mp4"
+            />
+          </video>
+        </Box>
+      )}
 
       {/* Right Form Section */}
       <Box
         sx={{
           flex: 1,
-          maxWidth: "60%",
+          maxWidth: { xs: "100%", md: "60%" },
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          padding: "40px",
+          padding: { xs: "20px", md: "40px" },
           backgroundColor: "white",
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+          boxShadow: { md: "0px 4px 10px rgba(0, 0, 0, 0.1)" },
         }}
       >
         <Box
           sx={{
             width: "100%",
             maxWidth: "600px",
-            padding: "40px",
+            padding: { xs: "20px", md: "40px" },
             backgroundColor: "white",
             borderRadius: "8px",
           }}
@@ -132,6 +139,8 @@ const SignUp = () => {
               Account created successfully!
             </Typography>
           )}
+
+          {/* Đăng ký với Google */}
           <Button
             variant="outlined"
             fullWidth
@@ -158,9 +167,12 @@ const SignUp = () => {
             />
             Sign up with Google
           </Button>
+
           <Typography textAlign="center" color="gray" mb={2}>
             or sign up with email
           </Typography>
+
+          {/* Input fields */}
           <TextField
             name="username"
             label="User Name"
@@ -168,7 +180,7 @@ const SignUp = () => {
             fullWidth
             value={formData.username}
             onChange={handleChange}
-            sx={{ marginBottom: 4 }}
+            sx={{ marginBottom: 3 }}
           />
           <TextField
             name="email"
@@ -177,7 +189,7 @@ const SignUp = () => {
             fullWidth
             value={formData.email}
             onChange={handleChange}
-            sx={{ marginBottom: 4 }}
+            sx={{ marginBottom: 3 }}
           />
           <TextField
             name="password"
@@ -187,7 +199,7 @@ const SignUp = () => {
             fullWidth
             value={formData.password}
             onChange={handleChange}
-            sx={{ marginBottom: 4 }}
+            sx={{ marginBottom: 3 }}
           />
           <TextField
             name="confirmPassword"
@@ -197,8 +209,10 @@ const SignUp = () => {
             fullWidth
             value={formData.confirmPassword}
             onChange={handleChange}
-            sx={{ marginBottom: 1 }}
+            sx={{ marginBottom: 2 }}
           />
+
+          {/* Button Sign Up */}
           <Button
             variant="contained"
             fullWidth
@@ -215,7 +229,10 @@ const SignUp = () => {
           >
             Sign Up
           </Button>
+
           <Divider sx={{ marginY: 2, width: "100%" }} />
+
+          {/* Chuyển sang trang đăng nhập */}
           <Typography textAlign="center">
             Already have an account?{" "}
             <Button

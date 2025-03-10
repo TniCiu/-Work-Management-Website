@@ -13,6 +13,7 @@ import { cloneDeep, isEmpty } from 'lodash'
 
 import {generatePlaceholderCard} from '~/utils/formatters'
 import { useRef } from 'react'
+import { useMediaQuery } from '@mui/material'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN : 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
@@ -62,7 +63,6 @@ function BoardContent({
   // Lấy columns từ mockData nếu có, nếu không lấy từ orderedColumnsState
   const columns = Array.isArray(mockData) && mockData.length > 0 ? mockData : orderedColumnsState;
 
- 
   
   const findColumnByCardId = (cardId) => {
     return orderedColumnsState.find(column => column?.cards?.map(card => card._id)?.includes(cardId));
